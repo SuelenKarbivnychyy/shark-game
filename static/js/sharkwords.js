@@ -66,8 +66,8 @@ function generateLetterButtons() {
 //
 // `buttonEl` is an `HTMLElement` object.
 //
-function disableLetterButton(buttonEl) {
-  buttonEl.setAttribute('disabled', 'true');
+function disableLetterButton(buttonEl) {  
+  buttonEl.disabled = true;
   
 }
 
@@ -81,6 +81,45 @@ function isLetterInWord(letter) {
   } else {
     return false;
   };
+
+}
+
+const handleCorrectGuess = (letter) => {
+
+  if (isLetterInWord(letter)) {
+    const correctGuessLetters = document.querySelectorAll(`.${letter}`);
+
+    for ( const char of correctGuessLetters) {
+      char.innerHTML = letter;
+    };    
+  };
+
+}
+
+
+const handleWrongGuess = () => {
+  // still to implement
+}
+
+const buttonClicked = (evt) => {
+  // get the button that was clicked using the event target
+  // get the letter inside the button that was clicked
+  // you should then check if the letter is in the word
+  // if it is, call `handleCorrectGuess`
+  // if it is not, call `handleWrongGuess`
+  // finally, disable the button so the letter can't be clicked again
+  // YOUR CODE HERE
+
+  const targetBtn = evt.target;
+  const letter = targetBtn.innerHTML;
+
+  if (isLetterInWord(letter) === true) {
+    handleCorrectGuess(letter);
+    disableLetterButton(targetBtn);
+  } else {
+    handleWrongGuess(); // still to implement this else part of this function
+  }
+  
 }
 
 // This function is called to start the game.
@@ -90,14 +129,18 @@ function startGame() {
 
   const buttons = document.querySelectorAll('#letter-buttons button');
 
-  for (const button of buttons) {
-    // add an event handler that calls the buttonClicked function when a button is clicked
-    // YOUR CODE HERE
+  for (const button of buttons) {   
+    
+    button.addEventListener('click', buttonClicked);    
 
-  }
+  };
 
   // add an event handler to handle clicking on the Play Again button
   // YOUR CODE HERE
 }
 
 startGame(); // Call startGame() when the page loads.
+
+
+
+//TODO: Continue from handleWrongGuess function
