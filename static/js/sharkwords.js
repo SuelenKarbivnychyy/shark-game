@@ -18,21 +18,16 @@ const WORDS = [
 let numWrong = 0;
 let correctGuesses = 0;
 
-// For now, we'll hardcode the word that the user has to guess
-// You can change this to choose a random word from WORDS once you
-// finish this lab but we hard code it so we know what the word is
-// and can tell if things look correct for this word
-
 
 const wordToGuess = (listOfWords) => {
 
   const randomIndex = Math.floor(Math.random() * listOfWords.length);
-
   const word = listOfWords[randomIndex];
 
   return word;
 
 }
+
 
 const word = wordToGuess(WORDS);
 
@@ -63,17 +58,16 @@ function generateLetterButtons() {
 }
 
 // Set the `disabled` property of `buttonEl` to true.
-//
 // `buttonEl` is an `HTMLElement` object.
-//
-function disableLetterButton(buttonEl) {  
+
+function disableLetterButton(buttonEl) {
   buttonEl.disabled = true;
   
 }
 
 // This is a helper function we will use in the future
 // It should return `true` if `letter` is in the word
-// For now, you should test it out to make sure it works
+
 function isLetterInWord(letter) {
   
   if (word.includes(letter)) {
@@ -84,31 +78,50 @@ function isLetterInWord(letter) {
 
 }
 
+
 const handleCorrectGuess = (letter) => {
+
+  const wordLength = word.length;  
 
   if (isLetterInWord(letter)) {
     const correctGuessLetters = document.querySelectorAll(`.${letter}`);
 
-    for ( const char of correctGuessLetters) {
+    for (const char of correctGuessLetters) {
       char.innerHTML = letter;
+      correctGuesses += 1;
+
+      if (wordLength === correctGuesses) {
+        const playAgain = document.getElementById('play-again');
+        playAgain.innerHTML = "You Won, Congratulation! Click here to play again."
+        playAgain.style.display = 'block';
+      };
     };    
   };
 
 }
 
 
-const handleWrongGuess = () => {
-  // still to implement
-}
+const handleWrongGuess = (letter) => {
+  numWrong += 1;  
+  
+  let currentImg = document.getElementById('shark-img');
+  const letterButtons = document.querySelectorAll('button');
+  const playAgain = document.getElementById('play-again');
+
+  currentImg.setAttribute('src', `/static/images/guess${numWrong}.png`);
+
+  console.log(numWrong);
+  if (numWrong === 5) {
+    playAgain.style.display = 'block';
+    for (const letterElement of letterButtons) {
+          disableLetterButton(letterElement);
+    };
+  };
+
+};
+
 
 const buttonClicked = (evt) => {
-  // get the button that was clicked using the event target
-  // get the letter inside the button that was clicked
-  // you should then check if the letter is in the word
-  // if it is, call `handleCorrectGuess`
-  // if it is not, call `handleWrongGuess`
-  // finally, disable the button so the letter can't be clicked again
-  // YOUR CODE HERE
 
   const targetBtn = evt.target;
   const letter = targetBtn.innerHTML;
@@ -117,9 +130,16 @@ const buttonClicked = (evt) => {
     handleCorrectGuess(letter);
     disableLetterButton(targetBtn);
   } else {
-    handleWrongGuess(); // still to implement this else part of this function
-  }
+    handleWrongGuess(letter);
+    disableLetterButton(targetBtn);
+  };
   
+}
+
+
+const resetGame = () => {
+  window.location = '/sharkwords';
+
 }
 
 // This function is called to start the game.
@@ -128,19 +148,19 @@ function startGame() {
   generateLetterButtons();
 
   const buttons = document.querySelectorAll('#letter-buttons button');
+  const startGameAgain = document.getElementById('play-again');
+  
 
-  for (const button of buttons) {   
+  for (const button of buttons) {
     
-    button.addEventListener('click', buttonClicked);    
+    button.addEventListener('click', buttonClicked);
 
   };
 
-  // add an event handler to handle clicking on the Play Again button
-  // YOUR CODE HERE
+  startGameAgain.addEventListener('click', resetGame);
+
 }
+
 
 startGame(); // Call startGame() when the page loads.
 
-
-
-//TODO: Continue from handleWrongGuess function
